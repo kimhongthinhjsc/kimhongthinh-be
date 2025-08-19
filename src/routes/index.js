@@ -5,6 +5,7 @@ import productRoutes from "../routes/productRoutes.js";
 import categoryRoutes from "../routes/categoryRoutes.js"
 import homeRoutes from "../routes/home.js";
 import { StatusCodes } from "http-status-codes";
+import { uploadRoute } from "./uploadRoute.js";
 
 
 const router = express.Router();
@@ -22,4 +23,6 @@ router.use("/admin", adminRoutes);
 router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/home", homeRoutes);
+router.use("/upload", uploadRoute);
+
 export const APIs_V1 = router;
