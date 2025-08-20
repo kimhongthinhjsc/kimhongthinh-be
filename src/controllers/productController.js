@@ -83,3 +83,56 @@ export const updateProduct = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
+
+//Tìm sản phẩm
+export const searchProducts = async (req, res) => {
+  try {
+    const { keyword, page = 1, limit = 12 } = req.query;
+    const skip = (page - 1) * limit;
+
+    // Nếu không có keyword, trả về rỗng
+    if (!keyword || keyword.trim() === "") {
+      return res.json({ products: [], totalPages: 0, currentPage: page });
+    }
+
+    // Tìm theo name hoặc brand (regex, case-insensitive)
+    const regex = new RegExp(keyword, "i");
+    const filter = {
+      $or: [{ name: regex }, { brand: regex }],
+    };
+
+    const total = await Product.countDocuments(filter);
+
+    const products = await Product.find(filter)
+      .select("_id name price bestSeller brand images categoryId subcategoryId")
+      .skip(parseInt(skip))
+      .limit(parseInt(limit))
+      .populate("categoryId", "name slug")
+      .populate("subcategoryId", "name slug")
+      .lean();
+
+    const formattedProducts = products.map((p) => ({
+      _id: p._id,
+      name: p.name,
+      price: p.price,
+      bestSeller: p.bestSeller,
+      brand: p.brand,
+      category: p.categoryId
+        ? { _id: p.categoryId._id, name: p.categoryId.name }
+        : null,
+      subcategory: p.subcategoryId
+        ? { _id: p.subcategoryId._id, name: p.subcategoryId.name }
+        : null,
+      image: p.images?.length ? p.images[0] : null,
+    }));
+
+    res.json({
+      products: formattedProducts,
+      totalPages: Math.ceil(total / limit),
+      currentPage: parseInt(page),
+    });
+  } catch (err) {
+    console.error("Search products error:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+};
