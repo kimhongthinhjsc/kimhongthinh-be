@@ -4,6 +4,7 @@ import cors from "cors";
 import exitHook from "async-exit-hook";
 import { env } from "./config/environment.js";
 import { APIs_V1 } from "../src/routes/index.js";
+import { visitLogger } from "./middleware/visitLogger.js";
 
 const START_SERVER = () => {
   const app = express();
@@ -11,6 +12,8 @@ const START_SERVER = () => {
   // Enable req.body json data
   app.use(express.json());
   app.use(cors());
+  // 👇 Thêm middleware ghi log truy cập
+  app.use(visitLogger);
 
   //Use APIs v1
   app.use("/api/v1", APIs_V1);
