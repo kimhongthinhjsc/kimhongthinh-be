@@ -4,12 +4,16 @@ import {
   getProducts,
   getProductById,
   updateProduct,
+  searchProducts
 } from "../controllers/productController.js";
 
 const router = express.Router();
 
 // GET all products
 router.get("/", getProducts);
+
+// Search products
+router.get("/search", searchProducts);
 
 // GET one product
 router.get("/:id", getProductById);
