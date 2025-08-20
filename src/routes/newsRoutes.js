@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.post("/", verifyAccessToken, createNews);
-router.get("/all", verifyAccessToken, findAllNews);
+router.get("/find/all", verifyAccessToken, findAllNews);
 router.get("/:id", verifyAccessToken, getNews);
 
 
