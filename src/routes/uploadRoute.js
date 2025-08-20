@@ -6,7 +6,7 @@ import { verifyAccessToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 router.post("/image", verifyAccessToken, fileImage.single('file') , uploadController.uploadSingle);
-router.post("/images", fileImage.array('file', 5) , uploadController.uploadMulti);
+router.post("/images",verifyAccessToken, fileImage.array('file', 5) , uploadController.uploadMulti);
 router.post("/video", verifyAccessToken, fileImage.single('file') , uploadController.uploadVideo);
 
 export const uploadRoute = router;
