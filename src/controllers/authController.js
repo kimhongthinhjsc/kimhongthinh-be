@@ -2,7 +2,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import { generateAccessToken } from "../utils/generateToken.js";
-import e from "express";
 
 export const login = async (req, res) => {
   try {
