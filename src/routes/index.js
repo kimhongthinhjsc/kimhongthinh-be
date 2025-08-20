@@ -2,7 +2,8 @@ import express from "express";
 import authRoutes from "../routes/authRoutes.js";
 import adminRoutes from "../routes/adminRoutes.js";
 import productRoutes from "../routes/productRoutes.js";
-import categoryRoutes from "../routes/categoryRoutes.js"
+import categoryRoutes from "../routes/categoryRoutes.js";
+import newsRoutes from "../routes/newsRoutes.js";
 import homeRoutes from "../routes/home.js";
 import { StatusCodes } from "http-status-codes";
 import { uploadRoute } from "./uploadRoute.js";
@@ -20,6 +21,7 @@ router.get("/status", (req, res) => {
 
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
+router.use("/news", newsRoutes);
 router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/home", homeRoutes);
