@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes";
-import News from "../models/News";
+import News from "../models/News.js";
 
 
 export const createNews = async (req, res) => {
