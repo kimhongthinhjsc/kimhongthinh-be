@@ -30,7 +30,7 @@ export const createNews = async (req, res) => {
 export const getNews = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findById(id);
+        const news = await News.findOne({ titleLink: id });
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
@@ -53,12 +53,10 @@ export const getNews = async (req, res) => {
 
 export const findAllNews = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
+        const page = parseInt(req.params.page) || 1;
+        const limit = parseInt(req.params.limit) || 10;
         const skip = (page - 1) * limit;
-
         const news = await News.find().skip(skip).limit(limit);
-
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,

@@ -5,7 +5,8 @@ const router = express.Router();
 
 
 router.post("/", verifyAccessToken, createNews);
-router.get("/:id", verifyAccessToken, getNews);
 router.get("/all", verifyAccessToken, findAllNews);
+router.get("/:id", verifyAccessToken, getNews);
+
 
 export default router;
