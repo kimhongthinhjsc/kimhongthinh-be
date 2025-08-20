@@ -5,6 +5,8 @@ import productRoutes from "../routes/productRoutes.js";
 import categoryRoutes from "../routes/categoryRoutes.js";
 import newsRoutes from "../routes/newsRoutes.js";
 import homeRoutes from "../routes/home.js";
+import companyProfileRoutes from "../routes/companyProfileRoutes.js";
+import introduceRoutes from "../routes/introduce.js";
 import { StatusCodes } from "http-status-codes";
 import { uploadRoute } from "./uploadRoute.js";
 
@@ -26,5 +28,6 @@ router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/home", homeRoutes);
 router.use("/upload", uploadRoute);
-
+router.use("/company-profile", companyProfileRoutes);
+router.use("/introduce", introduceRoutes);
 export const APIs_V1 = router;
