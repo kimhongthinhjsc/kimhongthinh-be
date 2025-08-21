@@ -51,6 +51,31 @@ export const getNews = async (req, res) => {
     }
 }
 
+export const updateNews = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const news = req.body;
+        const newUpdate = await News.updateOne({ _id: id }, { $set: {...news} });
+        if (newUpdate) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: newUpdate
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
+
 export const findAllNews = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
