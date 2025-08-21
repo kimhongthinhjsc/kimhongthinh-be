@@ -2,8 +2,6 @@ import { StatusCodes } from "http-status-codes";
 
 const uploadSingle = async (req, res, next) => {
   try {
-
-    console.log(req);
     if (req.file) {
       res.status(StatusCodes.OK).json({
         success: true,
