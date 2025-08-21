@@ -30,7 +30,7 @@ export const createNews = async (req, res) => {
 export const getNews = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findOne({ titleLink: id });
+        const news = await News.findOne({ _id: id });
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
