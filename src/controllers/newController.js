@@ -30,11 +30,36 @@ export const createNews = async (req, res) => {
 export const getNews = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findOne({ titleLink: id });
+        const news = await News.findOne({ _id: id });
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
                 news: news
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
+
+export const updateNews = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const news = req.body;
+        const newUpdate = await News.updateOne({ _id: id }, { $set: {...news} });
+        if (newUpdate) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: newUpdate
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
