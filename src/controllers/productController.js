@@ -51,18 +51,31 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = await Product.findById(id);
+    const product = await Product.findById(id)
+      .populate("categoryId", "name") // chỉ lấy name
+      .populate("subcategoryId", "name");
 
     if (!product) {
       return res.status(404).json({ message: "Product not found", id });
     }
 
-    res.json(product);
+    // chuyển sang object JS để thêm field mới
+    const productObj = product.toObject();
+
+    res.json({
+      ...productObj,
+      categoryName: product.categoryId?.name || null,
+      subcategoryName: product.subcategoryId?.name || null,
+      // giữ nguyên categoryId, subcategoryId như cũ
+      categoryId: product._id ? product._doc.categoryId?._id || product._doc.categoryId : null,
+      subcategoryId: product._id ? product._doc.subcategoryId?._id || product._doc.subcategoryId : null,
+    });
   } catch (error) {
     console.error("❌ Lỗi:", error.message);
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
 
 // Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
