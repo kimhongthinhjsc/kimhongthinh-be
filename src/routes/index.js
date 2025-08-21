@@ -9,6 +9,7 @@ import companyProfileRoutes from "../routes/companyProfileRoutes.js";
 import introduceRoutes from "../routes/introduce.js";
 import subcategoryRoutes from "../routes/subcategoryRouter.js";
 import statsRoutes from "../routes/statsRoutes.js";
+import serviceRoutes from '../routes/serviceRoutes.js';
 import { StatusCodes } from "http-status-codes";
 import { uploadRoute } from "./uploadRoute.js";
 
@@ -33,5 +34,6 @@ router.use("/company-profile", companyProfileRoutes);
 router.use("/introduce", introduceRoutes);
 router.use("/subcategories", subcategoryRoutes);
 router.use("/stats", statsRoutes);
+router.use("/services", serviceRoutes);
 
 export const APIs_V1 = router;
