@@ -79,7 +79,7 @@ export const updateNews = async (req, res) => {
     try {
         const id = req.params.id;
         const news = req.body;
-        const newUpdate = await News.updateOne({ titleLink: id }, { $set: { ...news } });
+        const newUpdate = await News.updateOne({ _id: id }, { $set: { ...news } });
         if (newUpdate) {
             res.status(StatusCodes.OK).json({
                 success: true,
