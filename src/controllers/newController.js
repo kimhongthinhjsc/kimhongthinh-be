@@ -127,3 +127,27 @@ export const findAllNews = async (req, res) => {
         });
     }
 }
+
+export const deleteNews = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedNews = await News.deleteOne({ _id: id });
+        if (deletedNews.deletedCount > 0) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                message: "News deleted successfully!"
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Deleting news failed!",
+            error: error
+        });
+    }
+}
