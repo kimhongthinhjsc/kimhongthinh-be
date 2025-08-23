@@ -12,6 +12,7 @@ const serviceSchema = new mongoose.Schema({
   seoTitle: { type: String },
   seoDescription: { type: String },
   price: { type: Number, required: true }, // Giá bán
+  content: { type: String },
   features: [
     {
       title: { type: String },

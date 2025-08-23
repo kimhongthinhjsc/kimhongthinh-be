@@ -19,6 +19,7 @@ const productSchema = new mongoose.Schema(
         image: { type: String }, // ảnh minh họa (nếu có)
       },
     ],
+    content: { type: String }, // nội dung chi tiết (có thể là HTML)
 
     // --- Chi tiết sản phẩm (mô tả dài) ---
     description: { type: String },
