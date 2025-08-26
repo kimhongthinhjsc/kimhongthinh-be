@@ -7,9 +7,6 @@ const StatSchema = new Schema({
   value: String,
 });
 
-const ParagraphSchema = new Schema({
-  text: String,
-});
 
 const SomethingAboutSchema = new Schema({
   title: String,
@@ -70,3 +67,5 @@ const IntroduceSchema = new Schema({
 }, { timestamps: true });
 
 export default model("Introduce", IntroduceSchema);
+
+
