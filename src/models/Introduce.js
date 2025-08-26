@@ -7,9 +7,6 @@ const StatSchema = new Schema({
   value: String,
 });
 
-const ParagraphSchema = new Schema({
-  text: String,
-});
 
 const SomethingAboutSchema = new Schema({
   title: String,
@@ -32,12 +29,13 @@ const RoadSectionSchema = new Schema({
 const MissionVisionSchema = new Schema({
   title: String,
   text: String,
+  image: String
 });
 
 const BehaviorRulesSchema = new Schema({
   banner: String,
   mission: MissionVisionSchema,
-  vision: MissionVisionSchema,
+  vision: MissionVisionSchema
 });
 
 const CoreValueItemSchema = new Schema({
@@ -69,3 +67,5 @@ const IntroduceSchema = new Schema({
 }, { timestamps: true });
 
 export default model("Introduce", IntroduceSchema);
+
+
