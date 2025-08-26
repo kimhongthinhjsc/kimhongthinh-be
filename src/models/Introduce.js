@@ -35,7 +35,7 @@ const MissionVisionSchema = new Schema({
 const BehaviorRulesSchema = new Schema({
   banner: String,
   mission: MissionVisionSchema,
-  vision: MissionVisionSchema,
+  vision: MissionVisionSchema
 });
 
 const CoreValueItemSchema = new Schema({
