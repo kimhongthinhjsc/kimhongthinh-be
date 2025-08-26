@@ -51,12 +51,61 @@ export const getNews = async (req, res) => {
     }
 }
 
+export const getNewsId = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const news = await News.findOne({ _id: id });
+        if (news) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: news
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
+
+export const updateNews = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const news = req.body;
+        const newUpdate = await News.updateOne({ _id: id }, { $set: { ...news } });
+        if (newUpdate) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: newUpdate
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
+
 export const findAllNews = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const news = await News.find().skip(skip).limit(limit);
+        const news = await News.find().skip(skip).limit(limit).sort({ createdAt: -1 });
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
@@ -74,6 +123,30 @@ export const findAllNews = async (req, res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
             message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
+
+export const deleteNews = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const deletedNews = await News.deleteOne({ _id: id });
+        if (deletedNews.deletedCount > 0) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                message: "News deleted successfully!"
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Deleting news failed!",
             error: error
         });
     }
