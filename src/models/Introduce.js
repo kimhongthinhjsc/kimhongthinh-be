@@ -32,6 +32,7 @@ const RoadSectionSchema = new Schema({
 const MissionVisionSchema = new Schema({
   title: String,
   text: String,
+  image: String,
 });
 
 const BehaviorRulesSchema = new Schema({
