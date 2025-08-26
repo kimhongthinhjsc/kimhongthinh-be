@@ -149,3 +149,34 @@ export const searchProducts = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+// Xóa sản phẩm theo id
+export const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
+    }
+
+    await Product.findByIdAndDelete(id);
+
+    res.json({ message: "Xóa sản phẩm thành công", id });
+  } catch (err) {
+    console.error("Delete product error:", err.message);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+// Tạo sản phẩm mới
+export const createProduct = async (req, res) => {
+  try {
+    const newProduct = new Product(req.body);
+    const saved = await newProduct.save();
+    res.status(201).json(saved);
+  } catch (err) {
+    console.error("Create product error:", err.message);
+    res.status(400).json({ message: err.message });
+  }
+};
