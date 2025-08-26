@@ -9,11 +9,13 @@ export const login = async (req, res) => {
 
     // Tìm user theo email
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
+    if (!user)
+      return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
 
     // Kiểm tra password
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
+    if (!isMatch)
+      return res.status(400).json({ message: "Sai email hoặc mật khẩu" });
 
     // Tạo accessToken và refreshToken
     const accessToken = generateAccessToken(user._id);
@@ -29,7 +31,7 @@ export const login = async (req, res) => {
     // ✅ Cách mới: push vào mảng refreshTokens
     user.refreshTokens.push({
       token: refreshToken,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 ngày
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 ngày
     });
 
     await user.save();
@@ -52,7 +54,9 @@ export const refreshToken = async (req, res) => {
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
     } catch (err) {
-      return res.status(403).json({ message: "Refresh token không hợp lệ hoặc đã hết hạn" });
+      return res
+        .status(403)
+        .json({ message: "Refresh token không hợp lệ hoặc đã hết hạn" });
     }
 
     // 👉 tìm user có token này trong DB
@@ -62,15 +66,15 @@ export const refreshToken = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(403).json({ message: "Refresh token không tồn tại trong DB" });
+      return res
+        .status(403)
+        .json({ message: "Refresh token không tồn tại trong DB" });
     }
 
     // 👉 tạo accessToken mới
-    const newAccessToken = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    const newAccessToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d"
+    });
 
     res.json({ accessToken: newAccessToken });
   } catch (err) {
@@ -104,5 +108,31 @@ export const logout = async (req, res) => {
     res.json({ message: "Đăng xuất thành công" });
   } catch (err) {
     res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "Không có token" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ message: "Không có token" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select(
+      "-password -refreshTokens"
+    );
+    if (!user) {
+      return res.status(401).json({ message: "Người dùng không tồn tại" });
+    }
+
+    res.json({ message: "Xác thực thành công", user });
+  } catch (err) {
+    res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
   }
 };
