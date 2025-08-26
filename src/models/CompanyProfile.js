@@ -22,9 +22,9 @@ const CompanyProfileSchema = new mongoose.Schema(
     social: {
       facebook: String,
       youtube: String,
-      twitter: String,
       zalo: String,
       tiktok: String,
+      messenger: String,
     },
   },
   { timestamps: true }
