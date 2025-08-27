@@ -149,6 +149,106 @@ export const findAllEvents = async (req, res) => {
     }
 }
 
+export const findUpcomingEvents = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const now = new Date();
+
+        const events = await Event.aggregate([
+            {
+                $match: {
+                    date: { $gte: now }   // chỉ lấy sự kiện >= hôm nay
+                }
+            },
+            {
+                $addFields: {
+                    year: { $year: "$date" },
+                    month: { $month: "$date" }
+                }
+            },
+            {
+                $sort: {
+                    date: 1   // sự kiện gần nhất lên trước
+                }
+            },
+            { $skip: skip },
+            { $limit: limit }
+        ]);
+
+        const total = await Event.countDocuments({ date: { $gte: now } });
+
+        if (events.length > 0) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                events,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "No upcoming events found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching upcoming events failed!",
+            error: error.message
+        });
+    }
+}
+
+export const findPastEvents = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const now = new Date();
+
+        const events = await Event.aggregate([
+            {
+                $match: {
+                    date: { $lt: now }   // chỉ lấy sự kiện đã qua
+                }
+            },
+            {
+                $sort: {
+                    date: -1   // sự kiện đã diễn ra gần nhất trước
+                }
+            },
+            { $skip: skip },
+            { $limit: limit }
+        ]);
+
+        const total = await Event.countDocuments({ date: { $lt: now } });
+
+        if (events.length > 0) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                events,
+                totalPages: Math.ceil(total / limit),
+                currentPage: page
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "No past events found!"
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching past events failed!",
+            error: error.message
+        });
+    }
+};
+
 export const deleteEvent = async (req, res) => {
     try {
         const id = req.params.id;
