@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const NewsSchema = new mongoose.Schema(
+const EventSchema = new mongoose.Schema(
     {
         title: { type: String, required: true },
         titleLink: { type: String, required: true, unique: true },
@@ -11,5 +11,5 @@ const NewsSchema = new mongoose.Schema(
     },
     { timestamps: true });
 
-const News = mongoose.model("News", NewsSchema);
-export default News;
+const Event = mongoose.model("Event", EventSchema);
+export default Event;

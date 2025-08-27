@@ -1,16 +1,16 @@
 import { StatusCodes } from "http-status-codes";
-import News from "../models/News.js";
+import Event from "../models/Event.js";
 
 
-export const createNews = async (req, res) => {
+export const createEvent = async (req, res) => {
     try {
-        const news = req.body;
-        const newPost = await News.create(news);
-        if (newPost) {
+        const event = req.body;
+        const newEvent = await Event.create(event);
+        if (newEvent) {
             res.status(StatusCodes.CREATED).json({
                 success: true,
                 message: "Posted successfully!",
-                newsId: newPost.id
+                eventId: newEvent.id
             });
         } else {
             res.status(StatusCodes.REQUEST_TIMEOUT).json({
@@ -27,18 +27,18 @@ export const createNews = async (req, res) => {
     }
 }
 
-export const getNews = async (req, res) => {
+export const getEvent = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findOneAndUpdate(
+        const event = await Event.findOneAndUpdate(
             { titleLink: id },
             { $inc: { views: 1 } },   // tăng view lên 1
-            { new: true }            // trả về document sau khi update
+            { event: true }            // trả về document sau khi update
         );
-        if (news) {
+        if (event) {
             res.status(StatusCodes.OK).json({
                 success: true,
-                news: news
+                event: event
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
@@ -55,44 +55,44 @@ export const getNews = async (req, res) => {
     }
 }
 
-export const getNewsId = async (req, res) => {
+export const getEventId = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findOne({ _id: id });
-        if (news) {
+        const event = await Event.findOne({ _id: id });
+        if (event) {
             res.status(StatusCodes.OK).json({
                 success: true,
-                news: news
+                event: event
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
                 success: false,
-                message: "News not found!"
+                message: "Event not found!"
             });
         }
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Fetching news failed!",
+            message: "Fetching events failed!",
             error: error
         });
     }
 }
 
-export const updateNews = async (req, res) => {
+export const updateEvent = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = req.body;
-        const newUpdate = await News.updateOne({ _id: id }, { $set: { ...news } });
-        if (newUpdate) {
+        const event = req.body;
+        const eventUpdate = await Event.updateOne({ _id: id }, { $set: { ...event } });
+        if (eventUpdate) {
             res.status(StatusCodes.OK).json({
                 success: true,
-                news: newUpdate
+                event: eventUpdate
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
                 success: false,
-                message: "News not found!"
+                message: "Event not found!"
             });
         }
     } catch (error) {
@@ -104,12 +104,12 @@ export const updateNews = async (req, res) => {
     }
 }
 
-export const findAllNews = async (req, res) => {
+export const findAllEvents = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const news = await News.aggregate([
+        const events = await Event.aggregate([
             {
                 $addFields: {
                     year: { $year: "$updatedAt" },
@@ -127,17 +127,17 @@ export const findAllNews = async (req, res) => {
             { $skip: skip },
             { $limit: limit }
         ]);
-        if (news) {
+        if (events) {
             res.status(StatusCodes.OK).json({
                 success: true,
-                news: news,
-                totalPages: Math.ceil(await News.countDocuments() / limit),
+                events: events,
+                totalPages: Math.ceil(await Event.countDocuments() / limit),
                 currentPage: page
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
                 success: false,
-                message: "News not found!",
+                message: "Events not found!",
             });
         }
     } catch (error) {
@@ -149,25 +149,25 @@ export const findAllNews = async (req, res) => {
     }
 }
 
-export const deleteNews = async (req, res) => {
+export const deleteEvent = async (req, res) => {
     try {
         const id = req.params.id;
-        const deletedNews = await News.deleteOne({ _id: id });
-        if (deletedNews.deletedCount > 0) {
+        const deletedEvent = await Event.deleteOne({ _id: id });
+        if (deletedEvent.deletedCount > 0) {
             res.status(StatusCodes.OK).json({
                 success: true,
-                message: "News deleted successfully!"
+                message: "Event deleted successfully!"
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
                 success: false,
-                message: "News not found!"
+                message: "Event not found!"
             });
         }
     } catch (error) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
             success: false,
-            message: "Deleting news failed!",
+            message: "Deleting events failed!",
             error: error
         });
     }
