@@ -7,7 +7,9 @@ const EventSchema = new mongoose.Schema(
         content: { type: String, required: true },
         image: { type: String, required: true },
         author: { type: String, required: true },
-        views: { type: Number, default: 0 }
+        views: { type: Number, default: 0 },
+        location: { type: String, required: true },
+        date: { type: Date, required: true }
     },
     { timestamps: true });
 
