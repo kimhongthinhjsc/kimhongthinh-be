@@ -26,7 +26,6 @@ export const createEvent = async (req, res) => {
         });
     }
 }
-
 export const getEvent = async (req, res) => {
     try {
         const id = req.params.id;
