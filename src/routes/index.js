@@ -4,6 +4,7 @@ import adminRoutes from "../routes/adminRoutes.js";
 import productRoutes from "../routes/productRoutes.js";
 import categoryRoutes from "../routes/categoryRoutes.js";
 import newsRoutes from "../routes/newsRoutes.js";
+import eventRoutes from "../routes/eventRoutes.js";
 import homeRoutes from "../routes/home.js";
 import companyProfileRoutes from "../routes/companyProfileRoutes.js";
 import introduceRoutes from "../routes/introduce.js";
@@ -26,6 +27,7 @@ router.get("/status", (req, res) => {
 router.use("/auth", authRoutes);
 router.use("/admin", adminRoutes);
 router.use("/news", newsRoutes);
+router.use("/events", eventRoutes);
 router.use("/products", productRoutes);
 router.use("/categories", categoryRoutes);
 router.use("/home", homeRoutes);

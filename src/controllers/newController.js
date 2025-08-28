@@ -30,7 +30,11 @@ export const createNews = async (req, res) => {
 export const getNews = async (req, res) => {
     try {
         const id = req.params.id;
-        const news = await News.findOne({ titleLink: id });
+        const news = await News.findOneAndUpdate(
+            { titleLink: id },
+            { $inc: { views: 1 } },   // tăng view lên 1
+            { new: true }            // trả về document sau khi update
+        );
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
@@ -105,7 +109,24 @@ export const findAllNews = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const news = await News.find().skip(skip).limit(limit).sort({ createdAt: -1 });
+        const news = await News.aggregate([
+            {
+                $addFields: {
+                    year: { $year: "$updatedAt" },
+                    month: { $month: "$updatedAt" }
+                }
+            },
+            {
+                $sort: {
+                    year: -1,       // Năm mới trước
+                    month: -1,      // Tháng mới trước
+                    views: -1, // Ưu tiên nổi bật
+                    createdAt: -1   // Ngày mới nhất
+                }
+            },
+            { $skip: skip },
+            { $limit: limit }
+        ]);
         if (news) {
             res.status(StatusCodes.OK).json({
                 success: true,
