@@ -148,6 +148,33 @@ export const findAllNews = async (req, res) => {
         });
     }
 }
+export const findAllNewsAdmin = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+        const news = await News.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
+        if (news) {
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: news,
+                totalPages: Math.ceil(await News.countDocuments() / limit),
+                currentPage: page
+            });
+        } else {
+            res.status(StatusCodes.NOT_FOUND).json({
+                success: false,
+                message: "News not found!",
+            });
+        }
+    } catch (error) {
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            success: false,
+            message: "Fetching news failed!",
+            error: error
+        });
+    }
+}
 
 export const deleteNews = async (req, res) => {
     try {
