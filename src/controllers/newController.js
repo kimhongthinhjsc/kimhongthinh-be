@@ -135,8 +135,9 @@ export const findAllNews = async (req, res) => {
                 currentPage: page
             });
         } else {
-            res.status(StatusCodes.NOT_FOUND).json({
-                success: false,
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: [],
                 message: "News not found!",
             });
         }
@@ -162,8 +163,9 @@ export const findAllNewsAdmin = async (req, res) => {
                 currentPage: page
             });
         } else {
-            res.status(StatusCodes.NOT_FOUND).json({
-                success: false,
+            res.status(StatusCodes.OK).json({
+                success: true,
+                news: [],
                 message: "News not found!",
             });
         }
