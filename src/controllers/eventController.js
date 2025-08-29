@@ -108,24 +108,7 @@ export const findAllEvents = async (req, res) => {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const events = await Event.aggregate([
-            {
-                $addFields: {
-                    year: { $year: "$updatedAt" },
-                    month: { $month: "$updatedAt" }
-                }
-            },
-            {
-                $sort: {
-                    year: -1,       // Năm mới trước
-                    month: -1,      // Tháng mới trước
-                    views: -1, // Ưu tiên nổi bật
-                    createdAt: -1   // Ngày mới nhất
-                }
-            },
-            { $skip: skip },
-            { $limit: limit }
-        ]);
+        const events = await Event.find().sort({ createdAt: -1 }).skip(skip).limit(limit);
         if (events) {
             res.status(StatusCodes.OK).json({
                 success: true,
