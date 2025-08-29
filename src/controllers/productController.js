@@ -16,12 +16,12 @@ export const getProducts = async (req, res) => {
 
     const products = await Product.find(filter)
       .select("_id name price bestSeller brand images categoryId subcategoryId")
+      .sort({ bestSeller: -1, createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("categoryId", "name slug")
       .populate("subcategoryId", "name slug")
       .lean();
-
     const formattedProducts = products.map((p) => ({
       _id: p._id,
       name: p.name,
@@ -34,13 +34,13 @@ export const getProducts = async (req, res) => {
       subcategory: p.subcategoryId
         ? { _id: p.subcategoryId._id, name: p.subcategoryId.name }
         : null,
-      image: p.images?.length ? p.images[0] : null,
+      image: p.images?.length ? p.images[0] : null
     }));
 
     res.json({
       products: formattedProducts,
       totalPages: Math.ceil(total / limit),
-      currentPage: page,
+      currentPage: page
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -53,6 +53,7 @@ export const getProductById = async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id)
       .populate("categoryId", "name") // chỉ lấy name
+
       .populate("subcategoryId", "name");
 
     if (!product) {
@@ -67,8 +68,12 @@ export const getProductById = async (req, res) => {
       categoryName: product.categoryId?.name || null,
       subcategoryName: product.subcategoryId?.name || null,
       // giữ nguyên categoryId, subcategoryId như cũ
-      categoryId: product._id ? product._doc.categoryId?._id || product._doc.categoryId : null,
-      subcategoryId: product._id ? product._doc.subcategoryId?._id || product._doc.subcategoryId : null,
+      categoryId: product._id
+        ? product._doc.categoryId?._id || product._doc.categoryId
+        : null,
+      subcategoryId: product._id
+        ? product._doc.subcategoryId?._id || product._doc.subcategoryId
+        : null
     });
   } catch (error) {
     console.error("❌ Lỗi:", error.message);
@@ -76,15 +81,12 @@ export const getProductById = async (req, res) => {
   }
 };
 
-
 // Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
   try {
-    const updated = await Product.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true
+    });
 
     if (!updated) {
       return res.status(404).json({ message: "Không tìm thấy sản phẩm" });
@@ -111,13 +113,14 @@ export const searchProducts = async (req, res) => {
     // Tìm theo name hoặc brand (regex, case-insensitive)
     const regex = new RegExp(keyword, "i");
     const filter = {
-      $or: [{ name: regex }, { brand: regex }],
+      $or: [{ name: regex }, { brand: regex }]
     };
 
     const total = await Product.countDocuments(filter);
 
     const products = await Product.find(filter)
       .select("_id name price bestSeller brand images categoryId subcategoryId")
+      .sort({ bestSeller: -1, createdAt: -1 })
       .skip(parseInt(skip))
       .limit(parseInt(limit))
       .populate("categoryId", "name slug")
@@ -136,13 +139,13 @@ export const searchProducts = async (req, res) => {
       subcategory: p.subcategoryId
         ? { _id: p.subcategoryId._id, name: p.subcategoryId.name }
         : null,
-      image: p.images?.length ? p.images[0] : null,
+      image: p.images?.length ? p.images[0] : null
     }));
 
     res.json({
       products: formattedProducts,
       totalPages: Math.ceil(total / limit),
-      currentPage: parseInt(page),
+      currentPage: parseInt(page)
     });
   } catch (err) {
     console.error("Search products error:", err.message);
@@ -167,7 +170,6 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-
 
 // Tạo sản phẩm mới
 export const createProduct = async (req, res) => {
