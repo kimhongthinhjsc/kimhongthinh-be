@@ -220,7 +220,8 @@ export const findPastEvents = async (req, res) => {
             });
         } else {
             res.status(StatusCodes.NOT_FOUND).json({
-                success: false,
+                success: true,
+                events: [],
                 message: "No past events found!"
             });
         }
