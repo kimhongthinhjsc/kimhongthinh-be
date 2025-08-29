@@ -219,7 +219,7 @@ export const findPastEvents = async (req, res) => {
                 currentPage: page
             });
         } else {
-            res.status(StatusCodes.NOT_FOUND).json({
+            res.status(StatusCodes.OK).json({
                 success: true,
                 events: [],
                 message: "No past events found!"
