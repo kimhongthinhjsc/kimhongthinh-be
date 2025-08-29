@@ -117,8 +117,9 @@ export const findAllEvents = async (req, res) => {
                 currentPage: page
             });
         } else {
-            res.status(StatusCodes.NOT_FOUND).json({
-                success: false,
+            res.status(StatusCodes.OK).json({
+                success: true,
+                events: [],
                 message: "Events not found!",
             });
         }
@@ -170,8 +171,9 @@ export const findUpcomingEvents = async (req, res) => {
                 currentPage: page
             });
         } else {
-            res.status(StatusCodes.NOT_FOUND).json({
-                success: false,
+            res.status(StatusCodes.OK).json({
+                success: true,
+                events: [],
                 message: "No upcoming events found!"
             });
         }
