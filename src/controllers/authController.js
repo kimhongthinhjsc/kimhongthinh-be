@@ -136,3 +136,39 @@ export const checkAuth = async (req, res) => {
     res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
   }
 };
+
+export const changePassword = async (req, res) => {
+  try {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user?.id; // req.user đã được set từ middleware protect
+
+    if (!userId) {
+      return res.status(401).json({ message: "Không xác thực được người dùng" });
+    }
+
+    // Lấy user từ DB
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
+    }
+
+    // So sánh mật khẩu cũ
+    const isMatch = await user.comparePassword(oldPassword);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Mật khẩu cũ không chính xác" });
+    }
+
+    // Hash mật khẩu mới
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+
+    // Để tăng bảo mật: xóa tất cả refreshTokens cũ => bắt user đăng nhập lại
+    user.refreshTokens = [];
+
+    await user.save();
+
+    return res.json({ message: "Đổi mật khẩu thành công, vui lòng đăng nhập lại" });
+  } catch (err) {
+    return res.status(500).json({ message: "Lỗi server", error: err.message });
+  }
+};
