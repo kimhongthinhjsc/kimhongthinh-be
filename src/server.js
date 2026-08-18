@@ -6,6 +6,9 @@ import { env } from "./config/environment.js";
 import { APIs_V1 } from "../src/routes/index.js";
 import { visitLogger } from "./middleware/visitLogger.js";
 
+import dns from "node:dns";
+dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
+
 const START_SERVER = () => {
   const app = express();
 
